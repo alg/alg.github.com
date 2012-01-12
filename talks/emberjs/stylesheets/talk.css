@@ -275,6 +275,10 @@ pre {
   background: transparent;
 }
 
+pre code {
+  background: transparent;
+}
+
 #thanks p {
   font-size: 75%;
 }

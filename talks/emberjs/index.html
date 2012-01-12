@@ -6,6 +6,7 @@
     <meta name="author" content="Aleksey Gureiev" />
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+    <link href="stylesheets/idea.css" rel="stylesheet" />
     <link href="stylesheets/talk.css" rel="stylesheet" />
   </head>
   <body>
@@ -78,7 +79,7 @@
 
       <div class="step" data-x="1000" data-y="2000" data-rotate="90">
         <h1>Application</h1>
-        <code><pre>
+        <pre><code class="html">
   &lt;html>
     &lt;body>
       &lt;div id="app">
@@ -86,11 +87,11 @@
       &lt;/div>
     &lt;/body>
   &lt;/html>
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="600" data-y="2000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
 
   App = Em.Application.create({
 
@@ -99,12 +100,12 @@
     selectedVideo: null
 
   });
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="0" data-y="2000" data-rotate="90">
         <h1>Models</h1>
-        <code><pre>
+        <pre><code class="javascript">
 
   App.Video = Em.Object.extend({
 
@@ -114,12 +115,12 @@
 
   });
 
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="-1000" data-y="2000" data-rotate="90">
         <h1>Results controller</h1>
-        <code><pre>
+        <pre><code class="javascript">
   App.searchResultsController =
     Em.ArrayController.create({
 
@@ -134,23 +135,23 @@
       }
   });
 
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="1000" data-y="3000" data-rotate="90">
         <h1>Search box</h1>
-        <code><pre>
+        <pre><code class="javascript">
   &lt;script type="text/x-handlebars"
           placeholder="What you want to watch today?">
 
     {{view App.SearchBox}}
 
   &lt;/script>
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="500" data-y="3000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
   App.SearchBox = Em.TextField.extend({
 
     insertNewline: function() {
@@ -159,11 +160,11 @@
     }
 
   });
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="-100" data-y="3000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
   search: function(query) {
     var self = this;
 
@@ -182,11 +183,11 @@
       self.set('isSearching', false);
     });
   }
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="-800" data-y="3000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
   dataToVideos: function(entries) {
     var results = [];
 
@@ -202,12 +203,12 @@
 
     return results;
   }
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="1000" data-y="4000" data-rotate="90">
         <h1>Showing results</h1>
-        <code><pre>
+        <pre><code class="javascript">
   &lt;table>
     {{#each App.searchResultsController}}
       &lt;tr>
@@ -215,23 +216,23 @@
       &lt;/tr>
     {{/each}}
   &lt;/table>
-         </pre></code>
+         </code></pre>
       </div>
 
       <div class="step" data-x="1000" data-y="5000" data-rotate="90">
         <h1>Selecting video</h1>
-        <code><pre>
+        <pre><code class="javascript">
   App.ResultRow = Em.View.extend({
     video: null,
     click: function(evt) {
       App.set('selectedVideo', this.get('video'));
     }
   });
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="400" data-y="5000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
   &lt;table>
     {{#each App.searchResultsController}}
       {{#view App.ResultRow
@@ -242,23 +243,23 @@
       {{/view}}
     {{/each}}
   &lt;/table>
-         </pre></code>
+         </code></pre>
       </div>
 
       <div class="step" data-x="1000" data-y="6000" data-rotate="90">
         <h1>Playing video</h1>
-        <code><pre>
+        <pre><code class="javascript">
   &lt;script type="text/x-handlebars">
     {{#view App.Player}}
       &lt;h3>{{videoTitle}}&lt;/h3>
       &lt;iframe {{bindAttr src="videoUrl"}}>&lt;/iframe>
     {{/view}}
   &lt;/script>
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="500" data-y="6000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
   App.Player = Em.View.extend({
     videoBinding: "App.selectedVideo",
 
@@ -272,20 +273,20 @@
               this.getPath('.video.yid');
     }.property("video")
   });
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="1000" data-y="7000" data-rotate="90">
         <h1>Loading state</h1>
-        <code><pre>
+        <pre><code class="javascript">
   {{#if App.searchResultsController.isSearching}}
     Searching. Please wait&hellip;
   {{/if}}
-        </pre></code>
+        </code></pre>
       </div>
 
       <div class="step" data-x="400" data-y="7000" data-rotate="90">
-        <code><pre>
+        <pre><code class="javascript">
   App.searchResultsController =
     Em.ArrayController.create({
 
@@ -303,7 +304,7 @@
         });
       }
   });
-        </pre></code>
+        </code></pre>
       </div>
 
       <div id="thanks" class="step" data-x="-1000" data-y="6000" data-rotate="90">
@@ -332,5 +333,9 @@
     <script src="javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="javascripts/ember.js" type="text/javascript" charset="utf-8"></script>
     <script src="javascripts/app.js" type="text/javascript" charset="utf-8"></script>
+    <script src="javascripts/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      hljs.initHighlighting();
+    </script>
   </body>
 </html>
