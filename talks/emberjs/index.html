@@ -74,7 +74,7 @@
       </div>
 
       <div class="step" data-x="2000" data-y="5500" data-rotate="90" data-scale="12">
-        <h1>Let's build the boody thing!</h1>
+        <h1>Let's build the bloody thing!</h1>
       </div>
 
       <div class="step" data-x="1000" data-y="2000" data-rotate="90">
@@ -141,10 +141,10 @@
       <div class="step" data-x="1000" data-y="3000" data-rotate="90">
         <h1>Search box</h1>
         <pre><code class="javascript">
-  &lt;script type="text/x-handlebars"
-          placeholder="What you want to watch today?">
+  &lt;script type="text/x-handlebars">
 
-    {{view App.SearchBox}}
+    {{view App.SearchBox
+           placeholder="What you want to watch today?"}}
 
   &lt;/script>
         </code></pre>
@@ -195,8 +195,6 @@
       var e = entries[i];
       results.push(App.Video.create({
         yid: e.id.$t.split(':')[3],
-        seconds: parseInt(
-          e.media$group.yt$duration.seconds),
         title: e.title.$t
       }));
     }
