@@ -1,1 +1,336 @@
-ember
+<!doctype html>
+<html>
+  <head>
+    <title>Interactive YouTube search with Ember.js</title>
+    <meta name="description" content="A presentation on building interactive search with Ember.js">
+    <meta name="author" content="Aleksey Gureiev" />
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+    <link href="stylesheets/talk.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="impress" class="impress-not-supported">
+      <div class="fallback-message">
+        <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+        <p>For the best experience please use the latest <b>Chrome</b> or <b>Safari</b> browser. Firefox 10 (to be released soon) will also handle it.</p>
+      </div>
+
+      <div class="step slide" id="title">
+        <h1>Interactive YouTube search with Ember.js</h1>
+        <p class="credits">by Aleksey Gureiev</p>
+        <p>&nbsp;</p>
+        <p class="credits"><a href="http://alg.github.com/talks/emberjs/">http://alg.github.com/talks/emberjs/</a></p>
+      </div>
+
+      <div class="step slide" data-x="1000">
+        <h1>Ember.js</h1>
+        <q>Ember is a JavaScript framework for creating ambitious web applications by eliminating boilerplate and providing a standard application architecture.</q>
+        <q><a href="http://emberjs.com/">http://emberjs.com/</a></q>
+      </div>
+
+      <div class="step" data-x="2000">
+        <h1>Demo</h1>
+        <div id="app" class="container">
+          <div class="content">
+            <div class="row">
+              <div class="span16">
+                <script type="text/x-handlebars" charset="utf-8">
+                  {{view App.SearchBox placeholder="What do you want to watch today?"}}
+                </script>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="span8" id="results">
+                <script type="text/x-handlebars" charset="utf-8">
+                  <h3>Results:</h3>
+                  {{#if App.searchResultsController.isSearching}}
+                    Searching. Please wait&hellip;
+                  {{/if}}
+
+                  <table class="zebra-striped">
+                    {{#each App.searchResultsController}}
+                      {{#view App.ResultRow videoBinding="this" tagName="tr"}}
+                        <td class="title">{{video.title}}</td>
+                      {{/view}}
+                    {{/each}}
+                  </table>
+                </script>
+              </div>
+
+              <div class="span8">
+                <script type="text/x-handlebars">
+                  {{#view App.Player}}
+                    <h3>{{videoTitle}}</h3>
+                    <iframe width="450" height="275" {{bindAttr src="videoUrl"}} frameborder="0" allowfullscreen></iframe>
+                  {{/view}}
+                </script>
+              </div>
+            </div>
+
+         </div>
+        </div>
+      </div>
+
+      <div class="step" data-x="2000" data-y="5500" data-rotate="90" data-scale="12">
+        <h1>Let's build the boody thing!</h1>
+      </div>
+
+      <div class="step" data-x="1000" data-y="2000" data-rotate="90">
+        <h1>Application</h1>
+        <code><pre>
+  &lt;html>
+    &lt;body>
+      &lt;div id="app">
+        ...
+      &lt;/div>
+    &lt;/body>
+  &lt;/html>
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="600" data-y="2000" data-rotate="90">
+        <code><pre>
+
+  App = Em.Application.create({
+
+    rootElement:  "#app",
+
+    selectedVideo: null
+
+  });
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="0" data-y="2000" data-rotate="90">
+        <h1>Models</h1>
+        <code><pre>
+
+  App.Video = Em.Object.extend({
+
+    title: null,
+
+    yid: null
+
+  });
+
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="-1000" data-y="2000" data-rotate="90">
+        <h1>Results controller</h1>
+        <code><pre>
+  App.searchResultsController =
+    Em.ArrayController.create({
+
+      isSearching: false,
+
+      search: function(query) {
+        this.set('isSearching', true);
+
+        // search logic
+
+        this.set('isSearching', false);
+      }
+  });
+
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="1000" data-y="3000" data-rotate="90">
+        <h1>Search box</h1>
+        <code><pre>
+  &lt;script type="text/x-handlebars"
+          placeholder="What you want to watch today?">
+
+    {{view App.SearchBox}}
+
+  &lt;/script>
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="500" data-y="3000" data-rotate="90">
+        <code><pre>
+  App.SearchBox = Em.TextField.extend({
+
+    insertNewline: function() {
+      var query = this.get('value');
+      App.searchResultsController.search(query);
+    }
+
+  });
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="-100" data-y="3000" data-rotate="90">
+        <code><pre>
+  search: function(query) {
+    var self = this;
+
+    this.set('isSearching', true);
+    this.set('content', []);
+
+    var c = $.getJSON(
+      "http://gdata.youtube.com/feeds/api/videos",
+      { alt: 'json', 'max-results': 7, v: 2, q: query });
+
+    c.success(function(data) {
+      self.set('content', dataToVideos(data.feed.entry);
+    });
+
+    c.complete(function() {
+      self.set('isSearching', false);
+    });
+  }
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="-800" data-y="3000" data-rotate="90">
+        <code><pre>
+  dataToVideos: function(entries) {
+    var results = [];
+
+    for (var i = 0; i &lt; entries.length; i++) {
+      var e = entries[i];
+      results.push(App.Video.create({
+        yid: e.id.$t.split(':')[3],
+        seconds: parseInt(
+          e.media$group.yt$duration.seconds),
+        title: e.title.$t
+      }));
+    }
+
+    return results;
+  }
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="1000" data-y="4000" data-rotate="90">
+        <h1>Showing results</h1>
+        <code><pre>
+  &lt;table>
+    {{#each App.searchResultsController}}
+      &lt;tr>
+        &lt;td class="title">{{title}}&lt;/td>
+      &lt;/tr>
+    {{/each}}
+  &lt;/table>
+         </pre></code>
+      </div>
+
+      <div class="step" data-x="1000" data-y="5000" data-rotate="90">
+        <h1>Selecting video</h1>
+        <code><pre>
+  App.ResultRow = Em.View.extend({
+    video: null,
+    click: function(evt) {
+      App.set('selectedVideo', this.get('video'));
+    }
+  });
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="400" data-y="5000" data-rotate="90">
+        <code><pre>
+  &lt;table>
+    {{#each App.searchResultsController}}
+      {{#view App.ResultRow
+            videoBinding="this" tagName="tr"}}
+
+        &lt;td class="title">{{video.title}}&lt;/td>
+
+      {{/view}}
+    {{/each}}
+  &lt;/table>
+         </pre></code>
+      </div>
+
+      <div class="step" data-x="1000" data-y="6000" data-rotate="90">
+        <h1>Playing video</h1>
+        <code><pre>
+  &lt;script type="text/x-handlebars">
+    {{#view App.Player}}
+      &lt;h3>{{videoTitle}}&lt;/h3>
+      &lt;iframe {{bindAttr src="videoUrl"}}>&lt;/iframe>
+    {{/view}}
+  &lt;/script>
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="500" data-y="6000" data-rotate="90">
+        <code><pre>
+  App.Player = Em.View.extend({
+    videoBinding: "App.selectedVideo",
+
+    videoTitle: function() {
+      var video = this.get('video');
+      return video ? video.get('title') : "Play video";
+    }.property('video'),
+
+    videoUrl: function() {
+      return "http://www.youtube.com/embed/" +
+              this.getPath('.video.yid');
+    }.property("video")
+  });
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="1000" data-y="7000" data-rotate="90">
+        <h1>Loading state</h1>
+        <code><pre>
+  {{#if App.searchResultsController.isSearching}}
+    Searching. Please wait&hellip;
+  {{/if}}
+        </pre></code>
+      </div>
+
+      <div class="step" data-x="400" data-y="7000" data-rotate="90">
+        <code><pre>
+  App.searchResultsController =
+    Em.ArrayController.create({
+
+      isSearching: false,
+
+      search: function(query) {
+        var self = this;
+
+        this.set('isSearching', true);
+
+        var c = $.getJSON(...);
+
+        c.complete(function() {
+          self.set('isSearching', false);
+        });
+      }
+  });
+        </pre></code>
+      </div>
+
+      <div id="thanks" class="step" data-x="-1000" data-y="6000" data-rotate="90">
+        <h1>That's all folks!</h1>
+
+        <p>Aleksey Gureiev</p>
+
+        <ul>
+          <li><a href="http://twitter.com/spyromus">@spyromus</a></li>
+          <li><a href="mailto://spyromus@noizeramp.com?subject=emberjs+talk">spyromus@noizeramp.com</a></li>
+          <li><a href="http://blog.noizeramp.com/">http://blog.noizeramp.com</a></li>
+          <li><a href="https://plus.google.com/100698161235046113452/">https://plus.google.com/100698161235046113452/</a></li>
+        </ul>
+        <ul>
+          <li><a href="http://nrtime.noizeramp.com">http://nrtime.noizeramp.com</a></li>
+          <li><a href="http://textmepage.com">http://textmepage.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hint">
+      <p>Use a spacebar or arrow keys to navigate</p>
+    </div>
+
+    <script src="javascripts/impress.js"></script>
+    <script src="javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="javascripts/ember.js" type="text/javascript" charset="utf-8"></script>
+    <script src="javascripts/app.js" type="text/javascript" charset="utf-8"></script>
+  </body>
+</html>
